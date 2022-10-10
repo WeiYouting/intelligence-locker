@@ -1,23 +1,65 @@
 spring:
   datasource:
     druid:
-      driver-class-name:
+      driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: root
-      url: jdbc:mysql://localhost:3306/intelligence-locker
+      url: jdbc:mysql://localhost:3306/intelligence-locker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+  application:
+    name: intelligence-locker
 
+
+#  cache:
+#    type: redis
+#    redis:
+#      key-prefix: SMS_
+#  redis:
+#    host: localhost
+#    port: 6379
+#    password: root
+
+jetcache:
+  #  statIntervalMinutes: 1
+  areaInCacheName: false
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+
+  remote:
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+
+      host: localhost
+      port: 6379
+      password: root
 
 server:
   port: 80
 
+
 mybatis:
-#  configuration-properties:
-#    offsetAsPageNum: true
-#    rowBoundsWithCount: true
-#    reasonable: true
+  #  configuration-properties:
+  #    offsetAsPageNum: true
+  #    rowBoundsWithCount: true
+  #    reasonable: true
   mapper-locations: classpath:mapper/*.xml
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
-config:
-  pwd:
+
+logging:
+  group:
+    controller: com.wyt.intelligencelocker.controller.UserController
+    service: com.wyt.intelligencelocker.service.impl.UserServiceImpl
+  level:
+    controller: info
+    service: info
+  config: classpath:logback-spring.xml

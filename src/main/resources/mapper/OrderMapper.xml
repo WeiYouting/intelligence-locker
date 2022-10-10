@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.OrderMapper">
+    <resultMap id="orderMap" type="com.wyt.intelligencelocker.entity.Do.OrderDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"></result>
+        <result column="rider" property="rider" jdbcType="CHAR"></result>
+        <result column="customer" property="customer" jdbcType="CHAR"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="generation_time" property="generationTime" jdbcType="TIMESTAMP"></result>
+        <result column="completion_time" property="completionTime" jdbcType="TIMESTAMP"></result>
+        <result column="site_id" property="siteId" jdbcType="INTEGER"></result>
+        <result column="note" property="note" jdbcType="VARCHAR"></result>
+        <result column="locker_id" property="lockerId" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <sql id="Order_List">
+        `id`
+        ,`order_id`, `rider`, `customer`, `status`, `generation_time`,`completion_time`,`site_id`,`note`,`locker_id`
+    </sql>
+
+    <insert id="insertOrder">
+        insert `order`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="rider != null">
+                rider,
+            </if>
+            <if test="customer != null">
+                customer,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="generationTime != null">
+                generation_time,
+            </if>
+            <if test="completionTime != null">
+                completion_time,
+            </if>
+            <if test="siteId != null">
+                site_id,
+            </if>
+            <if test="note != null">
+                note,
+            </if>
+            <if test="lockerId != null">
+                locker_id,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="rider != null">
+                #{rider,jdbcType=CHAR},
+            </if>
+            <if test="customer != null">
+                #{customer,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="generationTime != null">
+                #{generationTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="completionTime != null">
+                #{completionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="siteId != null">
+                #{siteId,jdbcType=INTEGER},
+            </if>
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="lockerId != null">
+                #{lockerId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateStatus">
+        update `order`
+        set
+           <trim suffixOverrides=",">
+               <if test="status != null">
+                   `status`          = #{status,jdbcType=INTEGER},
+               </if>
+               <if test=" completionTime != null">
+                   `completion_time` = #{completionTime,jdbcType=TIMESTAMP},
+               </if>
+               <if test=" lockerId != null">
+                   `locker_id`       = #{lockerId,jdbcType=INTEGER},
+               </if>
+               <if test="rider != null">
+                   `rider`           = #{rider,jdbcType=VARCHAR},
+               </if>
+           </trim>
+        where `order_id` = #{orderId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="queryAllOrder" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+    </select>
+
+    <select id="queryByGenerationTime" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where
+        generation_time between #{start,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+        or
+        completion_time between #{start,jdbcType=TIMESTAMP} and #{end,jdbcType=TIMESTAMP}
+
+    </select>
+
+    <select id="queryByOrderId" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where
+        order_id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryBySiteIds" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `site_id` in
+        <foreach open="(" close=")" separator="," collection="idList" item="id">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </select>
+
+    <select id="queryByRider" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `rider` = #{tel,jdbcType=CHAR}
+    </select>
+
+    <select id="queryByCustomer" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `customer` = #{tel,jdbcType=CHAR}
+    </select>
+
+    <select id="queryByStatus" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `status` = #{status,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryBySiteIdByStatus" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `status` = #{status,jdbcType=INTEGER} and `site_id` in
+        <foreach open="(" close=")" separator="," collection="idList" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryByPhone" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `customer` = #{tel,jdbcType=CHAR}
+    </select>
+
+    <select id="queryByPhoneByNotStatus" resultMap="orderMap">
+        select
+        <include refid="Order_List"></include>
+        from `order`
+        where `customer` = #{tel,jdbcType=CHAR} and `status` not in (#{status,jdbcType=INTEGER});
+    </select>
+
+    <select id="countByOrderIdInteger" resultType="java.lang.Integer">
+        select 1
+        from `order`
+        where `order_id` = #{id,jdbcType=VARCHAR} limit 1
+    </select>
+
+
+</mapper>

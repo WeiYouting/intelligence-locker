@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.UserLoginMapper">
+    <resultMap id="userOperationMap" type="com.wyt.intelligencelocker.entity.Do.UserLoginDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
+        <result column="login_ip" property="loginIp" jdbcType="VARCHAR"></result>
+        <result column="login_time" property="loginTime" jdbcType="TIMESTAMP"></result>
+    </resultMap>
+
+    <sql id="User_Operation_Column_List">
+        `id`
+        , `phone`,  `login_ip`, `login_time`
+    </sql>
+
+    <insert id="insertRecord" parameterType="com.wyt.intelligencelocker.entity.Do.UserLoginDo">
+        insert `user_login` values (null,#{phone,jdbcType=CHAR},#{loginIp,jdbcType=VARCHAR},#{loginTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+</mapper>

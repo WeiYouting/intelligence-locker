@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.ManagerMapper">
+    <resultMap id="userOperationMap" type="com.wyt.intelligencelocker.entity.Do.ManagerDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
+        <result column="site_id" property="siteId" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <sql id="Manager_List">
+        `id`
+        ,  `phone`, `site_id`
+    </sql>
+
+    <insert id="insertManager">
+        insert
+        `manager` (`phone`,`site_id`) values
+        <foreach collection="managerDoList" item="manager" separator=",">
+            (#{manager.phone,jdbcType=CHAR}, #{manager.siteId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <update id="updateSiteIdByPhone">
+        update `manager`
+        set `site_id` = #{siteId,jdbcType=INTEGER}
+        where phone = #{phone,jdbcType=CHAR}
+    </update>
+
+    <delete id="deleteByPhone">
+        delete
+        from `manager`
+        where `phone` = #{tel,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="selectAllManager" resultType="com.wyt.intelligencelocker.entity.Do.ManagerDo">
+        select
+        <include refid="Manager_List"></include>
+        from `manager`
+    </select>
+
+    <select id="queryByPhone" resultType="com.wyt.intelligencelocker.entity.Do.ManagerDo">
+        select
+        <include refid="Manager_List"></include>
+        from `manager`
+        where phone = #{tel,jdbcType=CHAR}
+    </select>
+
+    <select id="queryBySiteIds" resultType="com.wyt.intelligencelocker.entity.Do.ManagerDo">
+        select
+        <include refid="Manager_List"></include>
+        from manager
+        where `site_id` in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+
+    </select>
+
+
+</mapper>

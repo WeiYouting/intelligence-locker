@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.CustomerMapper">
+    <resultMap id="userMap" type="com.wyt.intelligencelocker.entity.Do.CustomerDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
+        <result column="province" property="province" jdbcType="VARCHAR"></result>
+        <result column="city" property="city" jdbcType="VARCHAR"></result>
+        <result column="address" property="address" jdbcType="VARCHAR"></result>
+        <result column="level" property="level" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <sql id="User_Column_List">
+        `id`
+        ,`phone`, `province`, `city`, `address`, `level`
+    </sql>
+
+
+
+
+
+</mapper>

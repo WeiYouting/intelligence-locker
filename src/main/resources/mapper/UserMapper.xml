@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wyt.intelligencelocker.dao.UserMapper">
-    <resultMap id="userMap" type="com.wyt.intelligencelocker.entity.User">
+    <resultMap id="userMap" type="com.wyt.intelligencelocker.entity.Do.UserDo">
         <id column="id" property="id" jdbcType="INTEGER"></id>
-        <result column="phone" property="phone" jdbcType="VARCHAR"></result>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
         <result column="name" property="name" jdbcType="VARCHAR"></result>
         <result column="password" property="password" jdbcType="VARCHAR"></result>
         <result column="role" property="role" jdbcType="INTEGER"></result>
         <result column="register_time" property="registerTime" jdbcType="TIMESTAMP"></result>
         <result column="last_online_time" property="lastOnlineTime" jdbcType="TIMESTAMP"></result>
         <result column="integral" property="integral" jdbcType="DOUBLE"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
     </resultMap>
 
     <sql id="User_Column_List">
-        id, `phone`, `name`, `password`, `role`, `register_time`, `last_online_time`,`integral`
+        `id`
+        ,`phone`, `name`, `password`, `role`, `register_time`, `last_online_time`,`integral`,`status`
     </sql>
 
 
-    <insert id="insertUser" parameterType="com.wyt.intelligencelocker.entity.User" useGeneratedKeys="true"
+    <insert id="insertUser" parameterType="com.wyt.intelligencelocker.entity.Do.UserDo" useGeneratedKeys="true"
             keyProperty="id">
         insert into `user`
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                `phone`,`password`,
+            `phone`,
+            <if test="password != null">
+                `password`,
+            </if>
             <if test="name != null">
                 `name`,
             </if>
@@ -37,9 +42,15 @@
             <if test="integral != null">
                 `integral`,
             </if>
+            <if test="status != null">
+                `status`
+            </if>
         </trim>
         <trim prefix="values(" suffix=")" suffixOverrides=",">
-            #{phone,jdbcType=CHAR},#{password,jdbcType=VARCHAR},
+            #{phone,jdbcType=CHAR},
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
             </if>
@@ -53,13 +64,101 @@
                 #{lastOnlineTime,jdbcType=TIMESTAMP},
             </if>
             <if test="integral != null">
-                #{integral},
+                #{integral,jdbcType=DOUBLE},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER}
             </if>
         </trim>
     </insert>
 
+    <update id="updatePasswordByPhone">
+        update `user`
+        set `password` = #{pwd,jdbcType=VARCHAR}
+        where `phone` = #{tel}
+    </update>
+
+    <update id="updateNameByPhone">
+        update `user`
+        set `name` = #{name,jdbcType=VARCHAR}
+        where `phone` = #{tel,jdbcType=CHAR}
+    </update>
+
+    <update id="updateManager">
+        update `user`
+        set `role` = 2 where `phone` in
+        <foreach open="(" close=")" collection="tels" item="tel" separator=",">
+            #{tel,jdbcType=CHAR}
+        </foreach>
+    </update>
+
+    <update id="updateLastOnlineTimeByPhoneInteger">
+        update `user`
+        set `last_online_time` = #{time,jdbcType=TIMESTAMP}
+        where phone = #{tel,jdbcType=CHAR}
+    </update>
+
+    <update id="updateUserRole">
+        update `user`
+        set `role` = #{role,jdbcType=INTEGER}
+        where `phone` = #{tel,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateIntegral">
+        update `user`
+        set `integral` = `integral` + #{integral,jdbcType=DOUBLE}
+        where `phone` = #{phone,jdbcType=VARCHAR}
+
+    </update>
+
     <select id="selectUserNum" resultType="java.lang.Integer">
-        select count(*) from user where phone = #{tel} limit 1
+        select count(*)
+        from `user`
+        where `phone` = #{tel} limit 1
+    </select>
+
+    <select id="selectByPhoneUser" resultMap="userMap">
+        select
+        <include refid="User_Column_List"></include>
+        from `user` where `phone` = #{tel,jdbcType=VARCHAR};
+    </select>
+
+    <select id="selectAllUser" resultMap="userMap">
+        select
+        <include refid="User_Column_List"></include>
+        from `user`
+    </select>
+
+    <select id="selectUserByPhone" resultMap="userMap">
+        select
+        <include refid="User_Column_List"></include>
+        from `user` where `phone` = #{tel}
+    </select>
+
+    <select id="selectRoleByPhone" resultType="java.lang.Integer">
+        select `role`
+        from `user`
+        where `phone` = #{tel,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectRoleByPhones" resultType="java.lang.Integer">
+        select `role` from `user` where `phone` in
+        <foreach collection="tels" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=CHAR}
+        </foreach>
+    </select>
+
+    <select id="selectNumberByPhones" resultType="java.lang.Integer">
+        select count(*) from `user` where `phone` in
+        <foreach collection="tels" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=CHAR}
+        </foreach>
+    </select>
+
+    <select id="selectAllAdmin" resultType="java.lang.String">
+        select `phone`
+        from `user`
+        where `role` = 1
     </select>
 
 

@@ -1,10 +1,13 @@
 package com.wyt.intelligencelocker.service;
 
-import meta.exception.GlobalException;
-import meta.request.RegisterRequest;
+import com.wyt.intelligencelocker.meta.exception.GlobalException;
+import com.wyt.intelligencelocker.meta.exception.ParameterException;
+import com.wyt.intelligencelocker.meta.request.RegisterRequest;
+import com.wyt.intelligencelocker.utils.RoleUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
 
 /**
  * @Author WeiYouting
@@ -14,11 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class UserTest {
 
-    @Autowired
+    @Resource
     private IUserService iUserService;
 
+    @Resource
+    private RoleUtil roleUtil;
+
     @Test
-    void insert() throws GlobalException {
+    void insert() throws GlobalException, ParameterException {
         RegisterRequest user = new RegisterRequest();
 //        User user = new User();
 //        user.setName("张三");
@@ -29,10 +35,28 @@ public class UserTest {
 //        user.setRole(1);
 //        user.setIntegral(10.0);
         iUserService.register(user);
-
 //        user.setPhone("1110");
 //        user.setPassword("110");
 //        iUserService.register(user);
+
+    }
+
+    @Test
+    void testRole() {
+        Integer roleByPhone = roleUtil.getRoleByPhone("1803390272");
+        System.out.println(roleByPhone);
+    }
+
+    @Test
+    void register() {
+        RegisterRequest registerRequest = new RegisterRequest();
+
+        for (int i = 0; i < 100; i++) {
+            Long phone = 18033902799l + i;
+            registerRequest.setPhone(phone.toString());
+            registerRequest.setPassword("admin123");
+            iUserService.register(registerRequest);
+        }
 
     }
 

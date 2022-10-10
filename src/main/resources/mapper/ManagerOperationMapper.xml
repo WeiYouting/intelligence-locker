@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.ManagerOperationMapper">
+
+    <resultMap id="userOperationMap" type="com.wyt.intelligencelocker.entity.Do.ManagerOperationDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
+        <result column="site_id" property="siteId" jdbcType="INTEGER"></result>
+        <result column="new_site_id" property="newSiteId" jdbcType="INTEGER"></result>
+        <result column="operation_time" property="operationTime" jdbcType="TIME"></result>
+        <result column="operation_user" property="operationUser" jdbcType="CHAR"></result>
+        <result column="operation_ip" property="oerationIp" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="Manager_List">
+        `id`
+        ,  `phone`, `site_id`,`new_site_id`,`operation_time`,`operation_user`,`operation_ip`
+    </sql>
+
+    <insert id="insertInfo">
+        insert `manager_operation`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                `phone`,
+            </if>
+            <if test="siteId != null">
+                `site_id`,
+            </if>
+            <if test="newSiteId != null">
+                `new_site_id`,
+            </if>
+            <if test="operationTime != null">
+                `operation_time`,
+            </if>
+            <if test="operationUser != null">
+                `operation_user`,
+            </if>
+            <if test="oerationIp != null">
+                `operation_ip`,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                #{phone,jdbcType=CHAR},
+            </if>
+            <if test="siteId != null">
+                #{siteId,jdbcType=INTEGER},
+            </if>
+            <if test="newSiteId != null">
+                #{newSiteId,jdbcType=INTEGER},
+            </if>
+            <if test="operationTime != null">
+                #{operationTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operationUser != null">
+                #{operationUser,jdbcType=CHAR},
+            </if>
+            <if test="oerationIp != null">
+                #{oerationIp,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+</mapper>

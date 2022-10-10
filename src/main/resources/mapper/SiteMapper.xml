@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.SiteMapper">
+    <resultMap id="userOperationMap" type="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"></result>
+        <result column="site_address" property="siteAddress" jdbcType="VARCHAR"></result>
+        <result column="province" property="province" jdbcType="VARCHAR"></result>
+        <result column="city" property="city" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="Site_List">
+        `id`
+        ,  `site_name`, `site_address`,`province`,`city`
+    </sql>
+
+    <select id="queryAllSite" resultType="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        select
+        <include refid="Site_List"></include>
+        from `site`
+    </select>
+
+    <select id="queryByProvince" resultType="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        select
+        <include refid="Site_List"></include>
+        from `site`
+        where `province` like concat('%',#{province,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="queryByCity" resultType="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        select
+        <include refid="Site_List"></include>
+        from `site`
+        where `city` like concat('%',#{city,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="queryBySiteName" resultType="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        select
+        <include refid="Site_List"></include>
+        from `site`
+        where `site_name` like concat('%',#{name,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="queryByDetail" resultType="com.wyt.intelligencelocker.entity.Do.SiteDo">
+        select
+        <include refid="Site_List"></include>
+        from `site`
+        <where>
+            <if test="province != null">
+                province like concat("%",#{province,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="city != null">
+                and city like concat("%",#{city,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="address != null">
+                and site_address like concat("%",#{address,jdbcType=VARCHAR},"%")
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

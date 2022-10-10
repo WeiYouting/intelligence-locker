@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyt.intelligencelocker.dao.RiderMapper">
+    <resultMap id="userMap" type="com.wyt.intelligencelocker.entity.Do.RiderDo">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="phone" property="phone" jdbcType="CHAR"></result>
+        <result column="order_number" property="orderNum" jdbcType="VARCHAR"></result>
+        <result column="comment" property="comment" jdbcType="VARCHAR"></result>
+        <result column="level" property="level" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="Rider_List">
+        `id`
+        ,`phone`, `order_number`, `comment`, `level`
+    </sql>
+
+    <insert id="insertRider">
+        insert
+        `rider`
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            null,#{phone,jdbcType=CHAR},#{orderNum,jdbcType=INTEGER},#{comment,jdbcType=DOUBLE},#{level,jdbcType=INTEGER}
+        </trim>
+    </insert>
+
+    <delete id="removeByPhone">
+        delete
+        from `rider`
+        where `phone` = #{tel,jdbcType=CHAR}
+    </delete>
+
+    <select id="countByPhone" resultType="java.lang.Integer">
+        select 1
+        from `rider`
+        where phone = #{tel,jdbcType=VARCHAR} limit 1
+    </select>
+
+    <select id="queryAllRider" resultMap="userMap">
+        select
+        <include refid="Rider_List"></include>
+        from `rider`
+    </select>
+
+    <select id="queryByPhone" resultMap="userMap">
+        select
+        <include refid="Rider_List"></include>
+        from `rider`
+        where `phone` = #{tel,jdbcType=CHAR}
+    </select>
+
+
+</mapper>
