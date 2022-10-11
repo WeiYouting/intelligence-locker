@@ -7,6 +7,12 @@ spring:
       url: jdbc:mysql://localhost:3306/intelligence-locker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
   application:
     name: intelligence-locker
+  mail:
+    host: smtp.qq.com
+    username: wei.youting@qq.com
+    password: xfoikwnhtgcodhhb
+    port: 587
+    default-encoding: utf-8
 
 
 #  cache:
