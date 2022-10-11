@@ -12,10 +12,6 @@ import java.util.Random;
  * @Email Wei.youting@qq.com
  */
 public class OrderUtil {
-    public static void main(String[] args) {
-        String orderCode = getOrderCode("18033902728");
-        System.out.println(orderCode);
-    }
 
     /*
      * * 订单编码码生成器，生成32位数字编码，
